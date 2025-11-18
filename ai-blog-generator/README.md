@@ -18,7 +18,7 @@ Claude AI와 ChatGPT를 활용한 블로그 원고 자동 생성 및 치환 시�
 - **Frontend**: HTML, CSS, JavaScript
 - **API**: Claude API, OpenAI ChatGPT API
 - **Java**: 17
-- **Build Tool**: Maven
+- **Build Tool**: Gradle
 
 ## 프로젝트 구조
 
@@ -45,7 +45,14 @@ ai-blog-generator/
 │   │           ├── style.css
 │   │           └── app.js
 ├── generated-articles/    (생성된 원고 저장 폴더)
-├── pom.xml
+├── gradle/
+│   └── wrapper/
+│       ├── gradle-wrapper.jar
+│       └── gradle-wrapper.properties
+├── gradlew                (Unix용 Gradle Wrapper)
+├── gradlew.bat            (Windows용 Gradle Wrapper)
+├── build.gradle
+├── settings.gradle
 └── README.md
 ```
 
@@ -54,7 +61,7 @@ ai-blog-generator/
 ### 1. 사전 요구사항
 
 - Java 17 이상
-- Maven 3.6 이상
+- Gradle 8.0 이상 (또는 포함된 Gradle Wrapper 사용)
 - Claude API Key
 - OpenAI API Key
 
@@ -72,21 +79,33 @@ chatgpt.api.key=YOUR_CHATGPT_API_KEY_HERE
 
 ### 3. 프로젝트 빌드
 
+**Gradle Wrapper 사용 (권장):**
 ```bash
 cd ai-blog-generator
-mvn clean install
+./gradlew clean build
+```
+
+**또는 시스템 Gradle 사용:**
+```bash
+cd ai-blog-generator
+gradle clean build
 ```
 
 ### 4. 애플리케이션 실행
 
+**Gradle Wrapper 사용 (권장):**
 ```bash
-mvn spring-boot:run
+./gradlew bootRun
 ```
 
-또는
-
+**또는 시스템 Gradle 사용:**
 ```bash
-java -jar target/ai-blog-generator-1.0.0.jar
+gradle bootRun
+```
+
+**또는 빌드된 JAR 파일 실행:**
+```bash
+java -jar build/libs/ai-blog-generator-1.0.0.jar
 ```
 
 ### 5. 웹 브라우저에서 접속
