@@ -20,7 +20,8 @@ public class FileStorageService {
     private String storagePath;
 
     public String saveArticle(String content, int articleNumber) throws IOException {
-        File directory = new File(storagePath);
+        // 절대 경로로 변환
+        File directory = new File(storagePath).getAbsoluteFile();
         if (!directory.exists()) {
             directory.mkdirs();
         }
@@ -29,17 +30,18 @@ public class FileStorageService {
         String timestamp = LocalDateTime.now().format(formatter);
         String fileName = String.format("article_%d_%s.txt", articleNumber, timestamp);
 
-        Path filePath = Paths.get(storagePath, fileName);
+        Path filePath = Paths.get(directory.getAbsolutePath(), fileName);
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath.toFile()))) {
             writer.write(content);
         }
 
-        return filePath.toString();
+        return filePath.toAbsolutePath().toString();
     }
 
     public String saveArticleWithBothVersions(String original, String replaced, int articleNumber) throws IOException {
-        File directory = new File(storagePath);
+        // 절대 경로로 변환
+        File directory = new File(storagePath).getAbsoluteFile();
         if (!directory.exists()) {
             directory.mkdirs();
         }
@@ -48,7 +50,7 @@ public class FileStorageService {
         String timestamp = LocalDateTime.now().format(formatter);
         String fileName = String.format("article_%d_%s.txt", articleNumber, timestamp);
 
-        Path filePath = Paths.get(storagePath, fileName);
+        Path filePath = Paths.get(directory.getAbsolutePath(), fileName);
 
         StringBuilder content = new StringBuilder();
         content.append("==================== 원본 원고 ====================\n\n");
@@ -61,6 +63,6 @@ public class FileStorageService {
             writer.write(content.toString());
         }
 
-        return filePath.toString();
+        return filePath.toAbsolutePath().toString();
     }
 }

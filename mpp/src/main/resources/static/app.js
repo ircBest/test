@@ -208,10 +208,43 @@ function escapeHtml(text) {
 }
 
 function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(() => {
-        alert('클립보드에 복사되었습니다.');
-    }).catch(err => {
-        console.error('복사 실패:', err);
-        alert('복사에 실패했습니다.');
-    });
+    // 최신 브라우저용 Clipboard API
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+            alert('클립보드에 복사되었습니다.\n이제 Ctrl+V (또는 Cmd+V)로 붙여넣을 수 있습니다.');
+        }).catch(err => {
+            console.error('Clipboard API 실패:', err);
+            // Fallback 방법 시도
+            fallbackCopyToClipboard(text);
+        });
+    } else {
+        // 구형 브라우저용 fallback
+        fallbackCopyToClipboard(text);
+    }
+}
+
+function fallbackCopyToClipboard(text) {
+    // textarea를 사용한 fallback 복사 방법
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    textArea.style.top = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+            alert('클립보드에 복사되었습니다.\n이제 Ctrl+V (또는 Cmd+V)로 붙여넣을 수 있습니다.');
+        } else {
+            alert('복사에 실패했습니다.\n수동으로 텍스트를 선택하여 복사해주세요.');
+        }
+    } catch (err) {
+        console.error('Fallback 복사 실패:', err);
+        alert('복사에 실패했습니다.\n수동으로 텍스트를 선택하여 복사해주세요.');
+    }
+
+    document.body.removeChild(textArea);
 }
