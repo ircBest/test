@@ -1,12 +1,12 @@
-package com.blog.generator;
+package com.mpp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AiBlogGeneratorApplication {
+public class MppApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(AiBlogGeneratorApplication.class, args);
+        SpringApplication.run(MppApplication.class, args);
     }
 }

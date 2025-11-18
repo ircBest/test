@@ -7,9 +7,9 @@
     </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/ai-blog-generator.log</file>
+        <file>logs/mpp.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/ai-blog-generator-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>logs/mpp-%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder>
@@ -22,5 +22,5 @@
         <appender-ref ref="FILE"/>
     </root>
 
-    <logger name="com.blog.generator" level="DEBUG"/>
+    <logger name="com.mpp" level="DEBUG"/>
 </configuration>

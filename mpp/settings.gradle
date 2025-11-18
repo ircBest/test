@@ -5,4 +5,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'ai-blog-generator'
+rootProject.name = 'mpp'

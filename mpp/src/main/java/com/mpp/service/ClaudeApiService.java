@@ -1,4 +1,4 @@
-package com.blog.generator.service;
+package com.mpp.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

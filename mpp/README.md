@@ -1,6 +1,6 @@
-# AI 블로그 원고 생성기
+# MPP (Manuscript Publication Program)
 
-Claude AI와 ChatGPT를 활용한 블로그 원고 자동 생성 및 치환 시스템
+AI를 활용한 블로그용 원고 자동 생성 및 치환 시스템
 
 ## 주요 기능
 
@@ -8,7 +8,7 @@ Claude AI와 ChatGPT를 활용한 블로그 원고 자동 생성 및 치환 시�
 - ChatGPT API를 사용한 원고 치환
 - 프롬프트 입력 UI
 - 생성할 원고 수 설정
-- 작업 딜레이 설정 (API 오류 방지)
+- 작업 딜레이 설정 (기본 10초 - API 오류 방지)
 - 자동/수동 저장 기능
 - 텍스트 파일로 저장
 
@@ -23,12 +23,12 @@ Claude AI와 ChatGPT를 활용한 블로그 원고 자동 생성 및 치환 시�
 ## 프로젝트 구조
 
 ```
-ai-blog-generator/
+mpp/
 ├── src/
 │   ├── main/
 │   │   ├── java/
-│   │   │   └── com/blog/generator/
-│   │   │       ├── AiBlogGeneratorApplication.java
+│   │   │   └── com/mpp/
+│   │   │       ├── MppApplication.java
 │   │   │       ├── controller/
 │   │   │       │   └── BlogController.java
 │   │   │       ├── service/
@@ -40,6 +40,7 @@ ai-blog-generator/
 │   │   │           └── GenerateResponse.java
 │   │   └── resources/
 │   │       ├── application.properties
+│   │       ├── logback-spring.xml
 │   │       └── static/
 │   │           ├── index.html
 │   │           ├── style.css
@@ -81,13 +82,13 @@ chatgpt.api.key=YOUR_CHATGPT_API_KEY_HERE
 
 **Gradle Wrapper 사용 (권장):**
 ```bash
-cd ai-blog-generator
+cd mpp
 ./gradlew clean build
 ```
 
 **또는 시스템 Gradle 사용:**
 ```bash
-cd ai-blog-generator
+cd mpp
 gradle clean build
 ```
 
@@ -105,7 +106,7 @@ gradle bootRun
 
 **또는 빌드된 JAR 파일 실행:**
 ```bash
-java -jar build/libs/ai-blog-generator-1.0.0.jar
+java -jar build/libs/mpp-1.0.0.jar
 ```
 
 ### 5. 웹 브라우저에서 접속
@@ -182,7 +183,7 @@ chatgpt.api.model=gpt-4
 file.storage.path=generated-articles
 
 # 로그 레벨
-logging.level.com.blog.generator=DEBUG
+logging.level.com.mpp=DEBUG
 ```
 
 ## 생성된 파일 형식
@@ -207,7 +208,7 @@ logging.level.com.blog.generator=DEBUG
 
 1. API 키는 절대 공개 저장소에 업로드하지 마세요
 2. API 사용량에 따라 요금이 부과될 수 있습니다
-3. 딜레이 시간을 너무 짧게 설정하면 API 오류가 발생할 수 있습니다
+3. 딜레이 시간을 너무 짧게 설정하면 API 오류가 발생할 수 있습니다 (최소 10초 권장)
 4. 대량의 원고 생성 시 시간이 오래 걸릴 수 있습니다
 
 ## 트러블슈팅

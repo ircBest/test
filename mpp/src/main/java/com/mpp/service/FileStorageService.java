@@ -1,4 +1,4 @@
-package com.blog.generator.service;
+package com.mpp.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

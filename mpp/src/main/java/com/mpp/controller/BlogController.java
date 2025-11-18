@@ -1,10 +1,10 @@
-package com.blog.generator.controller;
+package com.mpp.controller;
 
-import com.blog.generator.dto.GenerateRequest;
-import com.blog.generator.dto.GenerateResponse;
-import com.blog.generator.service.ChatGptApiService;
-import com.blog.generator.service.ClaudeApiService;
-import com.blog.generator.service.FileStorageService;
+import com.mpp.dto.GenerateRequest;
+import com.mpp.dto.GenerateResponse;
+import com.mpp.service.ChatGptApiService;
+import com.mpp.service.ClaudeApiService;
+import com.mpp.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
