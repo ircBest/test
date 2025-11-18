@@ -25,12 +25,17 @@ public class ChatGptApiService {
     private String model;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ChatGptApiService.class);
 
     public String replaceContent(String originalContent) throws Exception {
+        if (originalContent == null || originalContent.trim().isEmpty()) {
+            throw new Exception("원본 콘텐츠가 비어있습니다");
+        }
         URL url = new URL(apiUrl);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
         try {
+            log.debug("ChatGPT API 요청 준비 - URL: {}, Model: {}", apiUrl, model);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Authorization", "Bearer " + apiKey);
             conn.setRequestProperty("Content-Type", "application/json");
@@ -46,12 +51,15 @@ public class ChatGptApiService {
                 escapeJson(userMessage)
             );
 
+            log.debug("ChatGPT API 요청 전송 중...");
+
             try (OutputStream os = conn.getOutputStream()) {
                 byte[] input = requestBody.getBytes(StandardCharsets.UTF_8);
                 os.write(input, 0, input.length);
             }
 
             int status = conn.getResponseCode();
+            log.debug("ChatGPT API 응답 상태 코드: {}", status);
 
             BufferedReader reader;
             if (status >= 200 && status < 300) {
@@ -68,6 +76,7 @@ public class ChatGptApiService {
             reader.close();
 
             if (status < 200 || status >= 300) {
+                log.error("ChatGPT API 오류 응답: {}", response.toString());
                 throw new Exception("ChatGPT API Error - HTTP " + status + ": " + response.toString());
             }
 
@@ -75,15 +84,19 @@ public class ChatGptApiService {
 
             if (jsonNode.has("choices") && jsonNode.get("choices").isArray()) {
                 JsonNode choices = jsonNode.get("choices");
+                log.debug("응답 choices 개수: {}", choices.size());
                 if (choices.size() > 0) {
                     JsonNode firstChoice = choices.get(0);
                     if (firstChoice.has("message") && firstChoice.get("message").has("content")) {
-                        return firstChoice.get("message").get("content").asText().trim();
+                        String result = firstChoice.get("message").get("content").asText().trim();
+                        log.info("ChatGPT API 응답 성공 (길이: {}자)", result.length());
+                        return result;
                     }
                 }
             }
 
-            return "답변이 없습니다.";
+            log.warn("ChatGPT API 응답에 콘텐츠가 없습니다");
+            throw new Exception("ChatGPT API 응답에 콘텐츠가 없습니다");
 
         } finally {
             conn.disconnect();

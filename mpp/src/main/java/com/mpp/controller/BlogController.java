@@ -35,11 +35,23 @@ public class BlogController {
                 try {
                     log.info("원고 {}/{} 생성 시작", i, request.getArticleCount());
 
+                    // Claude API로 원본 원고 생성
+                    log.debug("Claude API 호출 시작");
                     String originalContent = claudeApiService.generateArticle(request.getPrompt());
+                    if (originalContent == null || originalContent.trim().isEmpty()) {
+                        throw new Exception("Claude API에서 빈 응답을 반환했습니다");
+                    }
                     response.setOriginalContent(originalContent);
+                    log.info("원본 원고 생성 완료 (길이: {}자)", originalContent.length());
 
+                    // ChatGPT API로 원고 치환
+                    log.debug("ChatGPT API 호출 시작");
                     String replacedContent = chatGptApiService.replaceContent(originalContent);
+                    if (replacedContent == null || replacedContent.trim().isEmpty()) {
+                        throw new Exception("ChatGPT API에서 빈 응답을 반환했습니다");
+                    }
                     response.setReplacedContent(replacedContent);
+                    log.info("치환 원고 생성 완료 (길이: {}자)", replacedContent.length());
 
                     if (request.isAutoSave()) {
                         String filePath = fileStorageService.saveArticleWithBothVersions(
@@ -62,9 +74,10 @@ public class BlogController {
                     }
 
                 } catch (Exception e) {
-                    log.error("원고 {} 생성 중 오류 발생", i, e);
+                    log.error("원고 {} 생성 중 오류 발생: {}", i, e.getMessage(), e);
                     response.setSuccess(false);
                     response.setMessage("오류 발생: " + e.getMessage());
+                    // 에러가 발생해도 이미 생성된 내용이 있으면 표시
                     responses.add(response);
                 }
             }

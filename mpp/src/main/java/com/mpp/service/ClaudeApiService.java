@@ -25,6 +25,7 @@ public class ClaudeApiService {
     private String model;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ClaudeApiService.class);
 
     /**
      * Claude AI를 사용하여 블로그 원고 생성
@@ -34,10 +35,14 @@ public class ClaudeApiService {
      * @return 생성된 원고
      */
     public String generateArticle(String prompt, String keyword, String topic) throws Exception {
+        if (prompt == null || prompt.trim().isEmpty()) {
+            throw new Exception("프롬프트가 비어있습니다");
+        }
         URL url = new URL(apiUrl);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
         try {
+            log.debug("Claude API 요청 준비 - URL: {}, Model: {}", apiUrl, model);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("x-api-key", apiKey);
             conn.setRequestProperty("anthropic-version", "2023-06-01");
@@ -47,6 +52,7 @@ public class ClaudeApiService {
             // 키워드와 주제가 있으면 프롬프트에 추가
             String enhancedPrompt = prompt;
             if (keyword != null && !keyword.isEmpty() && topic != null && !topic.isEmpty()) {
+                log.debug("키워드와 주제 포함하여 프롬프트 강화 - 키워드: {}, 주제: {}", keyword, topic);
                 enhancedPrompt = String.format(
                     "%s\n\n" +
                     "【작성 조건】\n" +
@@ -68,12 +74,15 @@ public class ClaudeApiService {
                 escapeJson(enhancedPrompt)
             );
 
+            log.debug("Claude API 요청 전송 중...");
+
             try (OutputStream os = conn.getOutputStream()) {
                 byte[] input = requestBody.getBytes(StandardCharsets.UTF_8);
                 os.write(input, 0, input.length);
             }
 
             int status = conn.getResponseCode();
+            log.debug("Claude API 응답 상태 코드: {}", status);
 
             BufferedReader reader;
             if (status >= 200 && status < 300) {
@@ -90,6 +99,7 @@ public class ClaudeApiService {
             reader.close();
 
             if (status < 200 || status >= 300) {
+                log.error("Claude API 오류 응답: {}", response.toString());
                 throw new Exception("Claude API Error - HTTP " + status + ": " + response.toString());
             }
 
@@ -99,11 +109,14 @@ public class ClaudeApiService {
             if (contentArray != null && contentArray.isArray() && contentArray.size() > 0) {
                 JsonNode firstContent = contentArray.get(0);
                 if (firstContent.has("text")) {
-                    return firstContent.get("text").asText().trim();
+                    String result = firstContent.get("text").asText().trim();
+                    log.info("Claude API 응답 성공 (길이: {}자)", result.length());
+                    return result;
                 }
             }
 
-            return "답변이 없습니다.";
+            log.warn("Claude API 응답에 콘텐츠가 없습니다");
+            throw new Exception("Claude API 응답에 콘텐츠가 없습니다");
 
         } finally {
             conn.disconnect();
