@@ -1,0 +1,50 @@
+### Java ###
+*.class
+*.jar
+*.war
+*.ear
+*.log
+
+### Maven ###
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+### Gradle ###
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### Spring Boot ###
+.springBeans
+application-local.properties
+
+### IDE ###
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.classpath
+.project
+.settings/
+bin/
+
+### OS ###
+.DS_Store
+Thumbs.db
+
+### Generated Articles ###
+generated-articles/*.txt
+
+### API Keys ###
+**/application-*.properties
+!**/application.properties
