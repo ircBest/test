@@ -17,7 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-public class BlogController {
+public class MPPController {
 
     private final ClaudeApiService claudeApiService;
     private final ChatGptApiService chatGptApiService;
